@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divya Express - Track Your Order</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        h2 { color: #1a73e8; margin-bottom: 20px; }
+        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #dfe1e5; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #1a73e8; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; }
+        button:hover { background-color: #1557b0; }
+        #result { margin-top: 20px; text-align: left; padding: 15px; border-radius: 8px; background: #e8f0fe; display: none; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h2>Divya Express / ShipZip</h2>
+    <p>AWB नंबर यहाँ डालें:</p>
+    <input type="text" id="awbInput" placeholder="AWB Number">
+    <button onclick="trackOrder()">Track Now</button>
+    <div id="result"></div>
+</div>
+<script>
+    async function trackOrder() {
+        const awb = document.getElementById('awbInput').value;
+        const resultDiv = document.getElementById('result');
+        if(!awb) { alert("कृपया AWB नंबर डालें"); return; }
+        resultDiv.style.display = "block";
+        resultDiv.innerHTML = "चेक कर रहा हूँ...";
+        try {
+            const response = await fetch(`https://divya-tracking.onrender.com/track/${awb}`);
+            const data = await response.json();
+            if(data.success) {
+                resultDiv.innerHTML = `<p><strong>स्टेटस:</strong> ${data.status}</p><p><strong>लोकेशन:</strong> ${data.location}</p>`;
+            } else {
+                resultDiv.innerHTML = "जानकारी नहीं मिली।";
+            }
+        } catch (error) {
+            resultDiv.innerHTML = "सर्वर एरर। कृपया बाद में प्रयास करें।";
+        }
+    }
+</script>
+</body>
+</html>
